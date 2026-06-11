@@ -1,0 +1,14 @@
+# Local uploads and temporary reference material
+references/uploads/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Logs and local env files
+*.log
+.env
+.env.*
+
+# Dependency folders, if this static site later gains tooling
+node_modules/

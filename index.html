@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ギフター称号診断</title>
+    <meta
+      name="description"
+      content="TikTok LIVE などの配信でギフトを送る人向けの、称号・武勇伝・バトル感のあるタイプ診断。"
+    />
+    <meta property="og:title" content="ギフター称号診断" />
+    <meta
+      property="og:description"
+      content="LIVE ギフター、応援勢、パワーギフター向けの称号診断。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/gifter-diagnostic-hero.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="ギフター称号診断 ホーム">
+        <span class="brand-mark">ギ</span>
+        <span>ギフター称号</span>
+      </a>
+      <nav class="topnav" aria-label="メインナビゲーション">
+        <a href="#types">タイプ一覧</a>
+        <a href="#factory">診断ファクトリー</a>
+        <button class="nav-cta" type="button" data-start>開始</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-media" aria-hidden="true">
+          <img src="assets/gifter-diagnostic-hero.png" alt="" />
+        </div>
+        <div class="hero-content">
+          <p class="eyebrow">LIVEギフター称号診断</p>
+          <h1>あなたのギフト武勇伝タイプは？</h1>
+          <p class="hero-copy">
+            認知、見え方、感情、参加スタイルの4軸で、あなたのギフト癖を診断します。
+            VIP感、バトル脳、隠れ応援、空気づくりまで、4文字コードと称号カードで可視化します。
+          </p>
+          <div class="hero-actions">
+            <button class="primary-btn" type="button" data-start>診断をはじめる</button>
+            <a class="secondary-btn" href="#types">タイプを見る</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section intro">
+        <div>
+          <p class="eyebrow">診断の流れ</p>
+          <h2>ちょっと痛いけど、妙に当たる。</h2>
+        </div>
+        <div class="explain-grid">
+          <article>
+            <span class="step">01</span>
+            <h3>10問に回答</h3>
+            <p>認知欲、応援心、バトル脳、空気読みまでざっくり見ます。</p>
+          </article>
+          <article>
+            <span class="step">02</span>
+            <h3>称号コードを算出</h3>
+            <p>認知/応援、オープン/ひっそり、感情/クール、バトル/空気感を判定します。</p>
+          </article>
+          <article>
+            <span class="step">03</span>
+            <h3>武勇伝カードを保存</h3>
+            <p>結果カードを保存して、自分のギフター称号として共有できます。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section axes" aria-labelledby="axes-title">
+        <div class="section-heading">
+          <p class="eyebrow">4つの診断軸</p>
+          <h2 id="axes-title">あなたのギフター称号は4文字のコードになります。</h2>
+        </div>
+        <div class="axis-grid" id="axisGrid"></div>
+      </section>
+
+      <section class="quiz-panel hidden" id="quiz" aria-live="polite">
+        <div class="quiz-shell">
+          <div class="quiz-status">
+            <span id="questionCounter">1 / 10 問目</span>
+            <button class="ghost-btn" type="button" id="resetQuiz">リセット</button>
+          </div>
+          <div class="progress" aria-hidden="true">
+            <span id="progressFill"></span>
+          </div>
+          <h2 id="questionText"></h2>
+          <div class="answer-grid" id="answerGrid"></div>
+        </div>
+      </section>
+
+      <section class="result hidden" id="result">
+        <div class="result-card" id="resultCard">
+          <div class="result-art" id="resultArt">
+            <img id="resultImage" alt="" />
+          </div>
+          <div class="result-main">
+            <p class="eyebrow">あなたのギフター称号</p>
+            <h2><span id="resultCode"></span> <span id="resultName"></span></h2>
+            <p id="resultDescription"></p>
+            <div class="trait-row" id="traitRow"></div>
+          </div>
+        </div>
+
+        <div class="result-detail">
+          <article>
+            <h3>強み</h3>
+            <ul id="strengthsList"></ul>
+          </article>
+          <article>
+            <h3>注意点</h3>
+            <ul id="weaknessesList"></ul>
+          </article>
+          <article>
+            <h3>ギフト傾向</h3>
+            <ul id="tendenciesList"></ul>
+          </article>
+          <article class="comment-box">
+            <h3>パーソナルコメント</h3>
+            <p id="personalComment"></p>
+          </article>
+        </div>
+
+        <div class="share-actions">
+          <button class="primary-btn" type="button" id="downloadCard">カードを保存</button>
+          <button class="secondary-btn" type="button" id="shareResult">結果を共有</button>
+          <button class="ghost-btn" type="button" data-start>もう一度診断</button>
+        </div>
+        <canvas class="share-canvas" id="shareCanvas" width="1200" height="630" aria-hidden="true"></canvas>
+      </section>
+
+      <section class="section example-types" id="types">
+        <div class="section-heading">
+          <p class="eyebrow">称号一覧</p>
+          <h2>16種類のギフター武勇伝タイプ。</h2>
+        </div>
+        <div class="type-grid" id="typeGrid"></div>
+      </section>
+
+      <section class="section factory" id="factory">
+        <div>
+          <p class="eyebrow">クリエイター診断ファクトリー</p>
+          <h2>診断を量産できる共通フレームワーク。</h2>
+        </div>
+        <p>
+          診断軸、質問、タイプ定義、ビジュアル情報を分離しています。
+          将来の診断は JavaScript の設定を差し替えるだけで、同じ UI を再利用できます。
+        </p>
+        <div class="factory-list">
+          <span>配信者タイプ診断</span>
+          <span>視聴者タイプ診断</span>
+          <span>コメント人格診断</span>
+          <span>バトル中毒診断</span>
+          <span>疑似恋愛・愛着診断</span>
+          <span>SNS行動診断</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ヒーロー画像候補</title>
+    <style>
+      :root {
+        --bg: #101114;
+        --panel: #181a20;
+        --text: #f5f2ea;
+        --muted: #b7b1a5;
+        --line: rgba(255, 255, 255, 0.12);
+        --accent: #21c7b6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 38px 0 70px;
+      }
+
+      header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 28px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 6vw, 4rem);
+        line-height: 1;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+
+      article {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+      }
+
+      .body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px;
+      }
+
+      .label {
+        font-weight: 900;
+      }
+
+      .note {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 720px) {
+        header,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>ヒーロー画像候補</h1>
+          <p>気に入った案番号を教えてください。選んだ画像をトップページへ反映します。</p>
+        </div>
+        <a href="/">トップページへ</a>
+      </header>
+
+      <section class="grid">
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-1.png" alt="案1" />
+          <div class="body">
+            <span class="label">案1</span>
+            <span class="note">ゲームのクラス選択画面寄り</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-2.png" alt="案2" />
+          <div class="body">
+            <span class="label">案2</span>
+            <span class="note">配信・SNS感が強い</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-3.png" alt="案3" />
+          <div class="body">
+            <span class="label">案3</span>
+            <span class="note">MBTI・心理診断チャート寄り</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-4.png" alt="案4" />
+          <div class="body">
+            <span class="label">案4</span>
+            <span class="note">派手な診断結果リビール感</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-5.png" alt="案5" />
+          <div class="body">
+            <span class="label">案5</span>
+            <span class="note">推し活ソシャゲ診断感</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-6.png" alt="案6" />
+          <div class="body">
+            <span class="label">案6</span>
+            <span class="note">配信UI・リスナー称号感</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-7.png" alt="案7" />
+          <div class="body">
+            <span class="label">案7</span>
+            <span class="note">推し色ガチャカード感</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-8.png" alt="案8" />
+          <div class="body">
+            <span class="label">案8</span>
+            <span class="note">LIVEバトル・ランキング感</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-9.png" alt="案9" />
+          <div class="body">
+            <span class="label">案9</span>
+            <span class="note">夜の街×VIPギフトバトル</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-10.png" alt="案10" />
+          <div class="body">
+            <span class="label">案10</span>
+            <span class="note">ネタ自画像・VIPステッカー</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-11.png" alt="案11" />
+          <div class="body">
+            <span class="label">案11</span>
+            <span class="note">六本木風ナイトバトル</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-12.png" alt="案12" />
+          <div class="body">
+            <span class="label">案12</span>
+            <span class="note">落ち着いたVIP称号診断</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-13.png" alt="案13" />
+          <div class="body">
+            <span class="label">案13</span>
+            <span class="note">VIP人物キャラ・夜の街</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-14.png" alt="案14" />
+          <div class="body">
+            <span class="label">案14</span>
+            <span class="note">ネタ自画像ステッカー</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-15.png" alt="案15" />
+          <div class="body">
+            <span class="label">案15</span>
+            <span class="note">4タイプ人物集合</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-16.png" alt="案16" />
+          <div class="body">
+            <span class="label">案16</span>
+            <span class="note">サイト向け人物ヒーロー</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-17.png" alt="案17" />
+          <div class="body">
+            <span class="label">案17</span>
+            <span class="note">13番強化・VIPバトル</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-18.png" alt="案18" />
+          <div class="body">
+            <span class="label">案18</span>
+            <span class="note">ボス感・ステッカー寄り</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-19.png" alt="案19" />
+          <div class="body">
+            <span class="label">案19</span>
+            <span class="note">13番系・左余白強め</span>
+          </div>
+        </article>
+        <article>
+          <img src="assets/hero-candidates/hero-candidate-20.png" alt="案20" />
+          <div class="body">
+            <span class="label">案20</span>
+            <span class="note">武勇伝・王者感強め</span>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
