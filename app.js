@@ -534,22 +534,28 @@ async function downloadCard() {
   const gradient = ctx.createLinearGradient(0, 0, width, height);
   gradient.addColorStop(0, type.palette[0]);
   gradient.addColorStop(1, type.palette[1]);
-  ctx.fillStyle = "#101114";
+  const character = await loadCanvasImage(resultImagePath(code));
+  drawCoverImage(ctx, character, 0, 0, width, height);
+
+  const imageShade = ctx.createLinearGradient(0, 0, 0, height);
+  imageShade.addColorStop(0, "rgba(16,17,20,0.14)");
+  imageShade.addColorStop(0.34, "rgba(16,17,20,0.18)");
+  imageShade.addColorStop(0.58, "rgba(16,17,20,0.74)");
+  imageShade.addColorStop(1, "rgba(16,17,20,0.96)");
+  ctx.fillStyle = imageShade;
   ctx.fillRect(0, 0, width, height);
 
-  const character = await loadCanvasImage(resultImagePath(code));
-  drawCoverImage(ctx, character, 0, 0, width, 720);
-  const imageShade = ctx.createLinearGradient(0, 0, 0, 760);
-  imageShade.addColorStop(0, "rgba(16,17,20,0.08)");
-  imageShade.addColorStop(0.62, "rgba(16,17,20,0.12)");
-  imageShade.addColorStop(1, "#101114");
-  ctx.fillStyle = imageShade;
-  ctx.fillRect(0, 0, width, 760);
+  const sideShade = ctx.createLinearGradient(0, 0, width, 0);
+  sideShade.addColorStop(0, "rgba(16,17,20,0.7)");
+  sideShade.addColorStop(0.38, "rgba(16,17,20,0.2)");
+  sideShade.addColorStop(1, "rgba(16,17,20,0.54)");
+  ctx.fillStyle = sideShade;
+  ctx.fillRect(0, 0, width, height);
 
-  ctx.fillStyle = "rgba(255,255,255,0.16)";
+  ctx.fillStyle = "rgba(255,255,255,0.13)";
   for (let i = 0; i < 12; i += 1) {
     ctx.beginPath();
-    ctx.arc(80 + i * 76, 74 + (i % 3) * 116, 50, 0, Math.PI * 2);
+    ctx.arc(86 + i * 78, 80 + (i % 5) * 114, 48, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -562,21 +568,21 @@ async function downloadCard() {
 
   ctx.fillStyle = "#f2b84b";
   ctx.font = "900 132px Arial";
-  ctx.fillText(code, margin, 632);
+  ctx.fillText(code, margin, 600);
   ctx.fillStyle = "#f5f2ea";
-  fitCanvasText(ctx, type.name, margin, 704, contentWidth, 58, 38, "900");
+  fitCanvasText(ctx, type.name, margin, 672, contentWidth, 58, 38, "900");
 
-  ctx.fillStyle = "rgba(255,255,255,0.06)";
-  roundRect(ctx, 40, 748, width - 80, 810, 8);
+  ctx.fillStyle = "rgba(16,17,20,0.76)";
+  roundRect(ctx, 40, 718, width - 80, 840, 8);
   ctx.fill();
   ctx.strokeStyle = "rgba(255,255,255,0.14)";
   ctx.lineWidth = 2;
-  roundRect(ctx, 40, 748, width - 80, 810, 8);
+  roundRect(ctx, 40, 718, width - 80, 840, 8);
   ctx.stroke();
 
   ctx.fillStyle = "#b7b1a5";
   setCanvasFont(ctx, 32, "500");
-  wrapCanvasTextWithFont(ctx, type.description, margin, 826, contentWidth, 44, 3);
+  wrapCanvasTextWithFont(ctx, type.description, margin, 802, contentWidth, 44, 3);
 
   const traitText = diagnostic.dimensions
     .map((axis) => {
@@ -588,11 +594,11 @@ async function downloadCard() {
     .join("  /  ");
   ctx.fillStyle = "#f5f2ea";
   setCanvasFont(ctx, 26, "800");
-  wrapCanvasTextWithFont(ctx, traitText, margin, 980, contentWidth, 34, 2);
+  wrapCanvasTextWithFont(ctx, traitText, margin, 956, contentWidth, 34, 2);
 
-  drawCanvasSection(ctx, "強み", type.strengths, margin, 1060, contentWidth, type.palette[0]);
-  drawCanvasSection(ctx, "注意点", type.weaknesses, margin, 1224, contentWidth, "#ffdf7b");
-  drawCanvasSection(ctx, "ギフト傾向", type.tendencies, margin, 1388, contentWidth, type.palette[1]);
+  drawCanvasSection(ctx, "強み", type.strengths, margin, 1036, contentWidth, type.palette[0]);
+  drawCanvasSection(ctx, "注意点", type.weaknesses, margin, 1202, contentWidth, "#ffdf7b");
+  drawCanvasSection(ctx, "ギフト傾向", type.tendencies, margin, 1368, contentWidth, type.palette[1]);
 
   ctx.fillStyle = "#f5f2ea";
   ctx.globalAlpha = 0.78;
