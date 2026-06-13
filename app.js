@@ -270,6 +270,7 @@ const diagnostic = {
 
 const state = {
   index: 0,
+  gender: null,
   scores: { R: 0, S: 0, O: 0, H: 0, E: 0, C: 0, B: 0, A: 0 },
   answers: []
 };
@@ -318,7 +319,10 @@ function renderTypePreview() {
 function typeCard(code, type) {
   return `
     <article class="type-card" style="--type-a:${type.palette[0]}; --type-b:${type.palette[1]}">
-      <img class="type-image" src="${typeImagePath(code)}" alt="${code} ${type.name}のキャラクター" loading="lazy">
+      <div class="type-image-pair">
+        <img class="type-image" src="${pictureImagePath(code, "female")}" alt="${code} ${type.name} 女性のキャラクター" loading="lazy">
+        <img class="type-image" src="${pictureImagePath(code, "male")}" alt="${code} ${type.name} 男性のキャラクター" loading="lazy">
+      </div>
       <div class="type-top">
         <span class="type-code">${code}</span>
         <span class="type-icon" aria-hidden="true">${type.icon}</span>
@@ -331,19 +335,45 @@ function typeCard(code, type) {
 
 function startQuiz() {
   state.index = 0;
+  state.gender = null;
   state.answers = [];
   state.scores = { R: 0, S: 0, O: 0, H: 0, E: 0, C: 0, B: 0, A: 0 };
   result.classList.add("hidden");
   quiz.classList.remove("hidden");
-  renderQuestion();
+  renderGenderQuestion();
   quiz.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderGenderQuestion() {
+  const total = diagnostic.questions.length + 1;
+  questionCounter.textContent = `1 / ${total} 性別選択`;
+  progressFill.style.width = "0%";
+  questionText.textContent = "診断結果に表示する画像の性別を選んでください。";
+  answerGrid.innerHTML = `
+    <button class="answer-option gender-option" type="button" data-gender="male">
+      <span>男</span>
+      <strong>男性の画像で表示する</strong>
+    </button>
+    <button class="answer-option gender-option" type="button" data-gender="female">
+      <span>女</span>
+      <strong>女性の画像で表示する</strong>
+    </button>
+  `;
+  answerGrid.querySelectorAll("[data-gender]").forEach((button) => {
+    button.addEventListener("click", () => chooseGender(button.dataset.gender));
+  });
+}
+
+function chooseGender(gender) {
+  state.gender = gender;
+  renderQuestion();
 }
 
 function renderQuestion() {
   const question = diagnostic.questions[state.index];
-  const total = diagnostic.questions.length;
-  questionCounter.textContent = `${state.index + 1} / ${total} 問目`;
-  progressFill.style.width = `${(state.index / total) * 100}%`;
+  const total = diagnostic.questions.length + 1;
+  questionCounter.textContent = `${state.index + 2} / ${total} 問目`;
+  progressFill.style.width = `${((state.index + 1) / total) * 100}%`;
   questionText.textContent = question.text;
   answerGrid.innerHTML = question.options
     .map(
@@ -398,8 +428,8 @@ function showResult() {
   document.querySelector("#resultName").textContent = type.name;
   document.querySelector("#resultDescription").textContent = type.description;
   const resultImage = document.querySelector("#resultImage");
-  resultImage.src = typeImagePath(code);
-  resultImage.alt = `${code} ${type.name}のキャラクター`;
+  resultImage.src = resultImagePath(code);
+  resultImage.alt = `${code} ${type.name} ${genderLabel()}のキャラクター`;
   document.querySelector("#resultArt").style.setProperty("--type-a", type.palette[0]);
   document.querySelector("#resultArt").style.setProperty("--type-b", type.palette[1]);
   document.querySelector("#strengthsList").innerHTML = listItems(type.strengths);
@@ -411,6 +441,7 @@ function showResult() {
       const label = letter === axis.left ? axis.leftName : axis.rightName;
       return `<span>${letter}: ${label}</span>`;
     })
+    .concat(`<span>画像: ${genderLabel()}</span>`)
     .join("");
   document.querySelector("#personalComment").textContent = createPersonalComment(code);
   result.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -422,6 +453,20 @@ function listItems(items) {
 
 function typeImagePath(code) {
   return `assets/types/${code}.png`;
+}
+
+function resultImagePath(code) {
+  return pictureImagePath(code, state.gender);
+}
+
+function pictureImagePath(code, gender) {
+  const suffix = gender === "male" ? "男" : "女";
+  const fileName = code === "ROEA" && suffix === "女" ? "ROEA 女.png" : `${code}${suffix}.png`;
+  return `assets/picture/${fileName}`;
+}
+
+function genderLabel() {
+  return state.gender === "male" ? "男性" : "女性";
 }
 
 function createPersonalComment(code) {
@@ -478,48 +523,152 @@ async function downloadCard() {
   const type = diagnostic.types[code];
   const canvas = document.querySelector("#shareCanvas");
   const ctx = canvas.getContext("2d");
-  const contentX = 520;
-  const contentWidth = 600;
+  canvas.width = 1080;
+  canvas.height = 1620;
+  const width = canvas.width;
+  const height = canvas.height;
+  const margin = 64;
+  const contentWidth = width - margin * 2;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, width, height);
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
   gradient.addColorStop(0, type.palette[0]);
   gradient.addColorStop(1, type.palette[1]);
   ctx.fillStyle = "#101114";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 440, canvas.height);
+  ctx.fillRect(0, 0, width, height);
 
-  const character = await loadCanvasImage(typeImagePath(code));
-  drawCoverImage(ctx, character, 0, 0, 440, canvas.height);
-  ctx.fillStyle = "rgba(0,0,0,0.18)";
-  ctx.fillRect(0, 0, 440, canvas.height);
+  const character = await loadCanvasImage(resultImagePath(code));
+  drawCoverImage(ctx, character, 0, 0, width, 720);
+  const imageShade = ctx.createLinearGradient(0, 0, 0, 760);
+  imageShade.addColorStop(0, "rgba(16,17,20,0.08)");
+  imageShade.addColorStop(0.62, "rgba(16,17,20,0.12)");
+  imageShade.addColorStop(1, "#101114");
+  ctx.fillStyle = imageShade;
+  ctx.fillRect(0, 0, width, 760);
 
   ctx.fillStyle = "rgba(255,255,255,0.16)";
   for (let i = 0; i < 12; i += 1) {
     ctx.beginPath();
-    ctx.arc(72 + i * 38, 80 + (i % 4) * 124, 46, 0, Math.PI * 2);
+    ctx.arc(80 + i * 76, 74 + (i % 3) * 116, 50, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  ctx.font = "900 34px 'Yu Gothic', 'Meiryo', Arial";
-  ctx.fillStyle = "#f5f2ea";
-  ctx.fillText("ギフター称号診断", contentX, 112);
+  ctx.fillStyle = gradient;
+  roundRect(ctx, margin, 54, 288, 56, 8);
+  ctx.fill();
+  ctx.font = "900 28px 'Yu Gothic', 'Meiryo', Arial";
+  ctx.fillStyle = "#101114";
+  ctx.fillText("ギフター称号診断", margin + 24, 92);
+
   ctx.fillStyle = "#f2b84b";
-  ctx.font = "900 82px Arial";
-  ctx.fillText(code, contentX, 226);
+  ctx.font = "900 132px Arial";
+  ctx.fillText(code, margin, 632);
   ctx.fillStyle = "#f5f2ea";
-  fitCanvasText(ctx, type.name, contentX, 306, contentWidth, 64, 44, "900");
+  fitCanvasText(ctx, type.name, margin, 704, contentWidth, 58, 38, "900");
+
+  ctx.fillStyle = "rgba(255,255,255,0.06)";
+  roundRect(ctx, 40, 748, width - 80, 810, 8);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,0.14)";
+  ctx.lineWidth = 2;
+  roundRect(ctx, 40, 748, width - 80, 810, 8);
+  ctx.stroke();
+
   ctx.fillStyle = "#b7b1a5";
-  wrapCanvasText(ctx, type.description, contentX, 374, contentWidth, 34, 3);
+  setCanvasFont(ctx, 32, "500");
+  wrapCanvasTextWithFont(ctx, type.description, margin, 826, contentWidth, 44, 3);
+
+  const traitText = diagnostic.dimensions
+    .map((axis) => {
+      const letter = code.includes(axis.left) ? axis.left : axis.right;
+      const label = letter === axis.left ? axis.leftName : axis.rightName;
+      return `${letter}:${label}`;
+    })
+    .concat(genderLabel())
+    .join("  /  ");
   ctx.fillStyle = "#f5f2ea";
-  ctx.font = "800 25px 'Yu Gothic', 'Meiryo', Arial";
-  wrapCanvasText(ctx, type.tendencies.slice(0, 3).join(" / "), contentX, 538, contentWidth, 32, 2);
+  setCanvasFont(ctx, 26, "800");
+  wrapCanvasTextWithFont(ctx, traitText, margin, 980, contentWidth, 34, 2);
+
+  drawCanvasSection(ctx, "強み", type.strengths, margin, 1060, contentWidth, type.palette[0]);
+  drawCanvasSection(ctx, "注意点", type.weaknesses, margin, 1224, contentWidth, "#ffdf7b");
+  drawCanvasSection(ctx, "ギフト傾向", type.tendencies, margin, 1388, contentWidth, type.palette[1]);
+
+  ctx.fillStyle = "#f5f2ea";
+  ctx.globalAlpha = 0.78;
+  setCanvasFont(ctx, 22, "800");
+  ctx.fillText("shindan result card", margin, 1588);
+  ctx.globalAlpha = 1;
 
   const link = document.createElement("a");
   link.download = `gifter-type-${code}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
+}
+
+function drawCanvasSection(ctx, title, items, x, y, width, accent) {
+  ctx.fillStyle = "rgba(16,17,20,0.58)";
+  roundRect(ctx, x, y, width, 132, 8);
+  ctx.fill();
+  ctx.fillStyle = accent;
+  roundRect(ctx, x, y, 8, 132, 4);
+  ctx.fill();
+  ctx.fillStyle = "#f5f2ea";
+  setCanvasFont(ctx, 30, "900");
+  ctx.fillText(title, x + 28, y + 42);
+  ctx.fillStyle = "#d7d1c5";
+  setCanvasFont(ctx, 25, "600");
+  wrapCanvasTextWithFont(ctx, items.slice(0, 3).join(" / "), x + 28, y + 84, width - 56, 32, 2);
+}
+
+function setCanvasFont(ctx, size, weight) {
+  ctx.font = `${weight} ${size}px 'Yu Gothic', 'Meiryo', Arial`;
+}
+
+function wrapCanvasTextWithFont(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+  const words = Array.from(text);
+  let line = "";
+  let lines = 0;
+
+  words.forEach((word) => {
+    if (lines >= maxLines) {
+      return;
+    }
+
+    const testLine = `${line}${word}`;
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      if (lines === maxLines - 1) {
+        ctx.fillText(trimToWidth(ctx, `${line}…`, maxWidth), x, y);
+        lines += 1;
+        return;
+      }
+
+      ctx.fillText(line, x, y);
+      line = word;
+      y += lineHeight;
+      lines += 1;
+    } else {
+      line = testLine;
+    }
+  });
+
+  if (line && lines < maxLines) {
+    ctx.fillText(line, x, y);
+  }
+}
+
+function roundRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
 }
 
 function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
